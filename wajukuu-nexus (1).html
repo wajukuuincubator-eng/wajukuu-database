@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NEXUS // Wajukuu Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#020c08;--bg2:#041510;--bg3:#071e14;--panel:#050f0a;
+  --border:#0d3322;--border2:#0f4430;
+  --green:#00ff88;--green2:#00cc66;--green3:#004422;
+  --cyan:#00e5ff;--cyan2:#009eb3;
+  --red:#ff2244;--yellow:#ffcc00;--amber:#ff9900;--purple:#c084fc;
+  --dim:#1a5c3a;--text:#b8ffdd;--text2:#5aaa80;--text3:#2a6644;
+  --font-mono:'Share Tech Mono',monospace;
+  --font-hud:'Orbitron',sans-serif;
+  --font-body:'Rajdhani',sans-serif;
+  --glow:0 0 8px rgba(0,255,136,0.5),0 0 20px rgba(0,255,136,0.2);
+  --glow-soft:0 0 4px rgba(0,255,136,0.3);
+  --glow-cyan:0 0 8px rgba(0,229,255,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font-mono);font-size:13px;overflow-x:hidden;}
+#mc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.14;pointer-events:none;}
+.sl{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,0.14) 3px,rgba(0,0,0,0.14) 4px);}
+header,main,.ticker-bar,.term-bar,.nav-tabs{position:relative;z-index:10;}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:rgba(0,20,12,0.97);backdrop-filter:blur(4px);}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:var(--green3);border:1px solid var(--green2);display:flex;align-items:center;justify-content:center;font-family:var(--font-hud);font-size:10px;font-weight:900;color:var(--green);letter-spacing:0;text-shadow:var(--glow);}
+.logo-block{}
+.logo-text{font-family:var(--font-hud);font-size:16px;font-weight:900;color:var(--green);letter-spacing:4px;text-shadow:var(--glow);}
+.logo-sub{color:var(--text3);font-size:9px;letter-spacing:2px;margin-top:1px;}
+.logo-link{font-size:9px;color:var(--cyan2);letter-spacing:1px;cursor:pointer;text-decoration:none;}
+.logo-link:hover{color:var(--cyan);}
+.hdr-right{display:flex;align-items:center;gap:20px;}
+.live-ind{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:2px;color:var(--green);}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+.pulse{animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,0.7);}50%{box-shadow:0 0 0 5px rgba(0,255,136,0);}}
+.clock{font-family:var(--font-hud);font-size:15px;color:var(--cyan);text-shadow:var(--glow-cyan);letter-spacing:3px;}
+.hdr-site{display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--border2);background:rgba(0,40,20,0.4);}
+.hdr-site-label{font-size:9px;color:var(--text3);letter-spacing:1px;}
+.hdr-site-url{font-size:10px;color:var(--cyan);letter-spacing:1px;}
+
+/* TICKER */
+.ticker-bar{display:flex;align-items:center;background:rgba(0,50,30,0.3);border-bottom:1px solid var(--border);height:26px;overflow:hidden;}
+.ticker-label{flex-shrink:0;padding:0 10px;color:var(--green);font-size:9px;letter-spacing:2px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;background:rgba(0,40,20,0.5);}
+.ticker-track{flex:1;overflow:hidden;}
+.tc{white-space:nowrap;color:var(--text2);font-size:10px;animation:ticker 50s linear infinite;display:inline-block;}
+@keyframes ticker{0%{transform:translateX(100vw);}100%{transform:translateX(-100%);}}
+
+/* NAV */
+.nav-tabs{display:flex;gap:2px;padding:6px 16px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.nav-tab{padding:5px 16px;font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--text3);cursor:pointer;border:1px solid transparent;background:transparent;transition:all 0.2s;}
+.nav-tab:hover{color:var(--green2);border-color:var(--border2);}
+.nav-tab.active{color:var(--green);border-color:var(--green3);background:rgba(0,255,136,0.06);text-shadow:var(--glow-soft);}
+.notif-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:4px;vertical-align:middle;animation:pulse 1s infinite;}
+
+/* DASH */
+.dashboard{padding:12px 16px;display:flex;flex-direction:column;gap:12px;min-height:calc(100vh - 148px);}
+.page{display:none;flex-direction:column;gap:12px;}
+.page.active{display:flex;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.kpi-card{background:var(--panel);border:1px solid var(--border);border-top:2px solid var(--green3);padding:14px 16px 10px;position:relative;overflow:hidden;transition:border-color 0.3s;}
+.kpi-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:radial-gradient(circle at top right,rgba(0,255,136,0.06),transparent);pointer-events:none;}
+.kpi-card:hover{border-color:var(--green2);}
+.kpi-label{font-size:9px;letter-spacing:3px;color:var(--text3);margin-bottom:6px;}
+.kpi-value{font-family:var(--font-hud);font-size:24px;color:var(--green);text-shadow:var(--glow);letter-spacing:1px;}
+.kpi-delta{font-size:10px;margin-top:3px;color:var(--text3);}
+.kpi-delta.up{color:var(--green2);}
+.kpi-delta.dn{color:var(--red);}
+.sparkline{display:block;width:100%;height:28px;margin-top:8px;}
+
+/* PANELS */
+.row2{display:grid;grid-template-columns:1fr 1.4fr 0.9fr;gap:10px;}
+.row3{display:grid;grid-template-columns:0.8fr 1.6fr 1fr;gap:10px;}
+.panel{background:var(--panel);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(0,40,20,0.3);}
+.pt{font-size:10px;letter-spacing:3px;color:var(--green2);}
+.pb{font-size:9px;padding:2px 6px;border:1px solid var(--green3);color:var(--green2);letter-spacing:1px;background:rgba(0,255,136,0.05);}
+.pb.blink{animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* FUNNEL */
+.funnel-wrap{padding:12px;display:flex;flex-direction:column;gap:5px;flex:1;}
+.fs{display:grid;grid-template-columns:90px 1fr 70px 60px;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(0,51,34,0.3);}
+.fs:last-child{border-bottom:none;}
+.fl{font-size:9px;color:var(--text2);letter-spacing:1px;}
+.fb{background:var(--green3);height:7px;overflow:hidden;}
+.fbf{height:100%;background:linear-gradient(90deg,var(--green3),var(--green));transition:width 1s cubic-bezier(.4,0,.2,1);}
+.fc{font-family:var(--font-hud);font-size:12px;color:var(--cyan);text-align:right;}
+.fp{font-size:10px;color:var(--text3);text-align:right;}
+
+/* FEED */
+.feed-list{flex:1;overflow-y:auto;padding:6px 10px;display:flex;flex-direction:column;gap:3px;max-height:300px;}
+.feed-list::-webkit-scrollbar{width:3px;}
+.feed-list::-webkit-scrollbar-thumb{background:var(--green3);}
+.fi{display:grid;grid-template-columns:58px 80px 1fr 68px;gap:6px;align-items:center;padding:4px;border-left:2px solid transparent;font-size:11px;animation:fs 0.3s ease-out;}
+@keyframes fs{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.fi.visit{border-left-color:var(--green);background:rgba(0,255,136,0.03);}
+.fi.form{border-left-color:var(--cyan);}
+.fi.donate{border-left-color:var(--amber);}
+.fi.page{border-left-color:var(--text3);}
+.ft{color:var(--text3);font-size:10px;}
+.ftype{font-size:9px;letter-spacing:1px;padding:1px 4px;border:1px solid;}
+.ftype.visit{color:var(--green);border-color:var(--green3);}
+.ftype.form{color:var(--cyan);border-color:var(--cyan2);}
+.ftype.donate{color:var(--amber);border-color:#4a2c00;}
+.ftype.page{color:var(--text2);border-color:var(--text3);}
+.fm{color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;}
+.fv{text-align:right;color:var(--green);font-family:var(--font-hud);font-size:11px;}
+
+/* GEO */
+.geo-grid{padding:10px 12px 4px;display:grid;grid-template-columns:repeat(6,1fr);gap:3px;}
+.geo-cell{aspect-ratio:1;border-radius:1px;transition:background 0.5s;}
+.geo-bars{padding:8px 12px;flex:1;display:flex;flex-direction:column;gap:4px;}
+.gbr{display:grid;grid-template-columns:56px 1fr 46px;gap:6px;align-items:center;}
+.gbl{font-size:10px;color:var(--text2);}
+.gbb{background:var(--green3);height:5px;overflow:hidden;}
+.gbf{height:100%;background:var(--green);transition:width 1s;}
+.gbv{font-size:10px;color:var(--text3);text-align:right;}
+
+/* CHANNELS */
+.ch-list{padding:10px 12px;display:flex;flex-direction:column;gap:9px;flex:1;}
+.ch-top{display:flex;justify-content:space-between;margin-bottom:3px;}
+.ch-name{font-size:10px;color:var(--text2);letter-spacing:1px;}
+.ch-val{font-family:var(--font-hud);font-size:12px;color:var(--cyan);}
+.ch-bg{background:var(--green3);height:5px;}
+.ch-fill{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));transition:width 1s;}
+
+/* CHART */
+.main-chart{width:100%;flex:1;display:block;padding:8px 12px;}
+.cl{display:flex;gap:14px;}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);}
+.ld{width:8px;height:2px;}
+
+/* CAMPAIGNS */
+.ctable{width:100%;border-collapse:collapse;}
+.ctable thead tr{border-bottom:1px solid var(--border);}
+.ctable th{padding:7px 10px;text-align:left;font-size:9px;letter-spacing:2px;color:var(--text3);font-weight:400;}
+.ctable td{padding:7px 10px;font-size:11px;color:var(--text2);border-bottom:1px solid rgba(0,40,24,0.4);}
+.ctable tbody tr:hover{background:rgba(0,255,136,0.03);}
+.sb{font-size:9px;padding:2px 6px;letter-spacing:1px;border:1px solid;}
+.sb.hot{color:var(--green);border-color:var(--green3);background:rgba(0,255,136,0.07);}
+.sb.warm{color:var(--yellow);border-color:#443300;background:rgba(255,204,0,0.04);}
+.sb.cold{color:var(--text3);border-color:var(--border);}
+
+/* ══ VISITORS PAGE ══ */
+.vis-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px;}
+.vs-card{background:var(--panel);border:1px solid var(--border);border-top:2px solid var(--cyan2);padding:12px 14px;}
+.vs-label{font-size:9px;letter-spacing:3px;color:var(--text3);margin-bottom:4px;}
+.vs-val{font-family:var(--font-hud);font-size:22px;color:var(--cyan);text-shadow:var(--glow-cyan);}
+
+.vis-controls{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;}
+.vc-search{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:var(--font-mono);font-size:12px;padding:6px 10px;outline:none;}
+.vc-search:focus{border-color:var(--green3);}
+.vc-search::placeholder{color:var(--text3);}
+.vc-sel{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-mono);font-size:11px;padding:6px 10px;cursor:pointer;outline:none;}
+.vbtn{background:transparent;border:1px solid var(--green3);color:var(--green);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;padding:6px 12px;cursor:pointer;transition:all 0.2s;}
+.vbtn:hover{background:rgba(0,255,136,0.08);}
+.vbtn.danger{border-color:#440010;color:var(--red);}
+.vbtn.danger:hover{background:rgba(255,34,68,0.08);}
+
+.vtable-wrap{background:var(--panel);border:1px solid var(--border);overflow:hidden;}
+.vtable-scroll{overflow-x:auto;max-height:500px;overflow-y:auto;}
+.vtable-scroll::-webkit-scrollbar{width:3px;height:3px;}
+.vtable-scroll::-webkit-scrollbar-thumb{background:var(--green3);}
+.vtable{width:100%;border-collapse:collapse;min-width:900px;}
+.vtable thead{position:sticky;top:0;z-index:5;}
+.vtable thead tr{background:rgba(0,40,20,0.95);border-bottom:1px solid var(--border2);}
+.vtable th{padding:9px 11px;text-align:left;font-size:9px;letter-spacing:2px;color:var(--green2);font-weight:400;white-space:nowrap;cursor:pointer;user-select:none;}
+.vtable th:hover{color:var(--green);}
+.vtable td{padding:8px 11px;font-size:11px;color:var(--text2);border-bottom:1px solid rgba(0,40,24,0.3);white-space:nowrap;}
+.vtable tbody tr:hover{background:rgba(0,255,136,0.02);}
+.vtable tbody tr.new-r{animation:rowf 1.2s ease-out;}
+@keyframes rowf{0%{background:rgba(0,255,136,0.13);}100%{background:transparent;}}
+.av{width:26px;height:26px;border-radius:50%;background:var(--green3);border:1px solid var(--green2);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--green);font-family:var(--font-hud);vertical-align:middle;margin-right:6px;}
+.tag{display:inline-block;font-size:9px;padding:1px 5px;border:1px solid;letter-spacing:1px;margin:1px;}
+.tag.new{color:var(--green);border-color:var(--green3);background:rgba(0,255,136,0.05);}
+.tag.ret{color:var(--cyan);border-color:var(--cyan2);background:rgba(0,229,255,0.04);}
+.tag.src{color:var(--text2);border-color:var(--border);}
+.tag.mobile{color:var(--yellow);border-color:#443300;}
+.tag.desktop{color:var(--purple);border-color:#4b2080;}
+.tag.tablet{color:var(--amber);border-color:#4a2c00;}
+.tag.ke{color:var(--green2);border-color:var(--green3);}
+.tag.intl{color:var(--text2);border-color:var(--border);}
+.ts-cell{color:var(--text3);font-size:10px;}
+.url-cell{color:var(--cyan);font-size:10px;max-width:160px;overflow:hidden;text-overflow:ellipsis;}
+.act-btn{background:transparent;border:1px solid var(--border);color:var(--text3);font-family:var(--font-mono);font-size:9px;padding:2px 6px;cursor:pointer;transition:all 0.2s;}
+.act-btn:hover{border-color:var(--green3);color:var(--green);}
+.act-btn.del:hover{border-color:#440010;color:var(--red);}
+.empty-s{padding:40px;text-align:center;color:var(--text3);font-size:11px;letter-spacing:2px;}
+
+/* REGISTER FORM */
+.reg-panel{background:var(--panel);border:1px solid var(--border);margin-bottom:12px;}
+.reg-body{padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;align-items:end;}
+.rf{display:flex;flex-direction:column;gap:4px;}
+.rl{font-size:9px;letter-spacing:2px;color:var(--text3);}
+.ri{background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-family:var(--font-mono);font-size:12px;padding:7px 10px;outline:none;transition:border-color 0.2s;width:100%;}
+.ri:focus{border-color:var(--green3);box-shadow:0 0 6px rgba(0,255,136,0.1);}
+.ri::placeholder{color:var(--text3);}
+.rs{background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-mono);font-size:12px;padding:7px 10px;outline:none;cursor:pointer;width:100%;}
+.rsub{background:var(--green3);border:1px solid var(--green);color:var(--green);font-family:var(--font-hud);font-size:10px;letter-spacing:2px;padding:8px 16px;cursor:pointer;transition:all 0.2s;white-space:nowrap;height:36px;}
+.rsub:hover{background:rgba(0,255,136,0.13);box-shadow:var(--glow-soft);}
+.rmsg{padding:5px 16px 10px;font-size:11px;}
+.rmsg.ok{color:var(--green);}
+.rmsg.err{color:var(--red);}
+
+/* CHANGELOG */
+.cl-panel{background:var(--panel);border:1px solid var(--border);}
+.cl-form{padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:8px;align-items:end;border-bottom:1px solid var(--border);}
+.cl-entries{}
+.cl-row{display:grid;grid-template-columns:130px 110px 80px 1fr;gap:10px;align-items:start;padding:9px 14px;border-bottom:1px solid rgba(0,40,24,0.35);transition:background 0.15s;}
+.cl-row:hover{background:rgba(0,255,136,0.02);}
+.cl-row.new-cl{animation:rowf 1.2s ease-out;}
+.cl-time{font-size:10px;color:var(--text3);}
+.cl-auth{font-family:var(--font-hud);font-size:11px;color:var(--cyan);}
+.cl-what{font-size:12px;color:var(--text);grid-column:4;}
+.ct{font-size:9px;padding:1px 5px;border:1px solid;letter-spacing:1px;}
+.ct.update{color:var(--green);border-color:var(--green3);}
+.ct.fix{color:var(--yellow);border-color:#443300;}
+.ct.add{color:var(--cyan);border-color:var(--cyan2);}
+.ct.remove{color:var(--red);border-color:#440010;}
+
+/* HEALTH */
+.h-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.hc{background:var(--panel);border:1px solid var(--border);padding:14px;}
+.hc-label{font-size:9px;letter-spacing:3px;color:var(--text3);margin-bottom:8px;}
+.hc-val{font-family:var(--font-hud);font-size:22px;margin-bottom:8px;}
+.hc-val.ok{color:var(--green);text-shadow:var(--glow);}
+.hc-val.warn{color:var(--yellow);}
+.hc-val.bad{color:var(--red);}
+.hb{background:var(--green3);height:5px;overflow:hidden;}
+.hbf{height:100%;transition:width 0.6s ease;}
+
+/* MODAL */
+.mo{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,8,4,0.88);z-index:100;display:none;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mod{background:var(--bg2);border:1px solid var(--border2);width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.mod-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.mod-title{font-family:var(--font-hud);font-size:11px;color:var(--green);letter-spacing:2px;}
+.mod-close{background:transparent;border:1px solid var(--border);color:var(--text3);font-family:var(--font-mono);font-size:11px;padding:3px 8px;cursor:pointer;transition:all 0.2s;}
+.mod-close:hover{border-color:var(--red);color:var(--red);}
+.mod-body{padding:16px;}
+.mf{display:grid;grid-template-columns:110px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid rgba(0,40,24,0.3);align-items:start;}
+.mf:last-child{border-bottom:none;}
+.mk{font-size:9px;letter-spacing:2px;color:var(--text3);}
+.mv{font-size:12px;color:var(--text2);}
+.mv.hl{color:var(--cyan);}
+.mod-top{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);background:rgba(0,255,136,0.03);}
+.mod-av{width:48px;height:48px;border-radius:50%;background:var(--green3);border:1px solid var(--green2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--green);font-family:var(--font-hud);}
+
+/* TERM */
+.term-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(0,10,6,0.97);border-top:1px solid var(--border2);position:sticky;bottom:0;z-index:20;}
+.tp{color:var(--green);font-size:12px;white-space:nowrap;}
+.ti{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;caret-color:var(--green);}
+.ti::placeholder{color:var(--text3);}
+.tcur{color:var(--green);animation:blink 1s step-end infinite;}
+
+/* WAJUKUU EMBED PREVIEW */
+.site-preview{background:var(--panel);border:1px solid var(--border);margin-bottom:12px;}
+.site-prev-inner{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.site-info{display:flex;flex-direction:column;gap:4px;}
+.site-name{font-family:var(--font-hud);font-size:13px;color:var(--green);letter-spacing:3px;}
+.site-domain{font-size:11px;color:var(--cyan);}
+.site-desc{font-size:11px;color:var(--text2);max-width:400px;}
+.site-btns{display:flex;gap:8px;}
+.site-open{background:var(--green3);border:1px solid var(--green);color:var(--green);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;padding:6px 14px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.site-open:hover{background:rgba(0,255,136,0.15);box-shadow:var(--glow-soft);}
+.status-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.sp{display:inline-flex;align-items:center;gap:4px;font-size:9px;padding:3px 8px;border:1px solid;letter-spacing:1px;}
+.sp.online{color:var(--green);border-color:var(--green3);}
+.sp.tracked{color:var(--cyan);border-color:var(--cyan2);}
+.sp.mailchimp{color:var(--amber);border-color:#4a2c00;}
+
+@media(max-width:1100px){.kpi-row,.vis-stats{grid-template-columns:repeat(2,1fr);}.row2,.row3{grid-template-columns:1fr 1fr;}.h-stats{grid-template-columns:1fr 1fr;}}
+@media(max-width:720px){.row2,.row3,.h-stats,.vis-stats{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}.reg-body,.cl-form{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<canvas id="mc"></canvas>
+<div class="sl"></div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-icon">WAJ</div>
+    <div class="logo-block">
+      <div class="logo-text">NEXUS <span style="color:var(--text3);font-size:11px;letter-spacing:1px">// WAJUKUU</span></div>
+      <div class="logo-sub">ART PROJECT ANALYTICS — MUKURU, NAIROBI &nbsp;|&nbsp; <a class="logo-link" href="https://www.wajukuu.org" target="_blank">wajukuu.org ↗</a></div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-site">
+      <span class="hdr-site-label">TRACKING</span>
+      <span class="hdr-site-url">wajukuu.org</span>
+    </div>
+    <div class="live-ind"><span class="dot pulse"></span><span>LIVE</span></div>
+    <div class="clock" id="clock">00:00:00</div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">WAJUKUU FEED &gt;&gt;</div>
+  <div class="ticker-track"><div class="tc" id="tcontent"></div></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-tabs">
+  <button class="nav-tab active" data-page="analytics" onclick="showPage(this,'analytics')">// ANALYTICS</button>
+  <button class="nav-tab" data-page="visitors" onclick="showPage(this,'visitors')">// VISITOR DATABASE<span class="notif-dot" id="vis-notif"></span></button>
+  <button class="nav-tab" data-page="subscribers" onclick="showPage(this,'subscribers')">// SUBSCRIBERS</button>
+  <button class="nav-tab" data-page="changelog" onclick="showPage(this,'changelog')">// CHANGE LOG</button>
+  <button class="nav-tab" data-page="health" onclick="showPage(this,'health')">// SITE HEALTH</button>
+</nav>
+
+<main class="dashboard">
+
+  <!-- ══ ANALYTICS ══ -->
+  <div class="page active" id="page-analytics">
+    <!-- Wajukuu site info bar -->
+    <div class="site-preview">
+      <div class="ph"><span class="pt">// TRACKED WEBSITE</span></div>
+      <div class="site-prev-inner">
+        <div class="site-info">
+          <div class="site-name">WAJUKUU ART PROJECT</div>
+          <div class="site-domain">https://www.wajukuu.org</div>
+          <div class="site-desc">Art, education and community empowerment — Mukuru slum, Nairobi. Empowering children and youth through creativity.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+          <div class="status-pills">
+            <span class="sp online"><span class="dot pulse" style="width:6px;height:6px"></span>ONLINE</span>
+            <span class="sp tracked">● TRACKING ACTIVE</span>
+            <span class="sp mailchimp">✉ MAILCHIMP SYNC</span>
+          </div>
+          <a class="site-open" href="https://www.wajukuu.org" target="_blank">↗ OPEN SITE</a>
+        </div>
+      </div>
+    </div>
+
+    <section class="kpi-row">
+      <div class="kpi-card"><div class="kpi-label">TOTAL VISITORS</div><div class="kpi-value" id="kpiVisitors">0</div><div class="kpi-delta up" id="dVisitors">↑ loading...</div><svg class="sparkline" id="spkVisit" viewBox="0 0 120 28"></svg></div>
+      <div class="kpi-card"><div class="kpi-label">UNIQUE VISITORS</div><div class="kpi-value" id="kpiUnique">0</div><div class="kpi-delta up" id="dUnique">↑ unique sessions</div><svg class="sparkline" id="spkUnique" viewBox="0 0 120 28"></svg></div>
+      <div class="kpi-card"><div class="kpi-label">TODAY'S VISITS</div><div class="kpi-value" id="kpiToday">0</div><div class="kpi-delta up">↑ last 24h</div><svg class="sparkline" id="spkToday" viewBox="0 0 120 28"></svg></div>
+      <div class="kpi-card"><div class="kpi-label">SUBSCRIBERS</div><div class="kpi-value" id="kpiSubs">0</div><div class="kpi-delta up">↑ email list</div><svg class="sparkline" id="spkSubs" viewBox="0 0 120 28"></svg></div>
+    </section>
+
+    <section class="row2">
+      <div class="panel">
+        <div class="ph"><span class="pt">// PAGE VISITS</span><span class="pb">REAL-TIME</span></div>
+        <div class="funnel-wrap" id="pageFunnel"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="pt">// LIVE VISITOR STREAM</span><span class="pb blink">● LIVE</span></div>
+        <div class="feed-list" id="feedList"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="pt">// GEO SIGNAL</span></div>
+        <div class="geo-grid" id="geoGrid"></div>
+        <div class="geo-bars" id="geoBars"></div>
+      </div>
+    </section>
+
+    <section class="row3">
+      <div class="panel">
+        <div class="ph"><span class="pt">// TRAFFIC SOURCES</span></div>
+        <div class="ch-list" id="chList"></div>
+      </div>
+      <div class="panel">
+        <div class="ph">
+          <span class="pt">// 24H TRAFFIC CHART</span>
+          <div class="cl"><span class="li"><span class="ld" style="background:var(--green)"></span>Visitors</span><span class="li"><span class="ld" style="background:var(--cyan)"></span>Page Views</span></div>
+        </div>
+        <svg id="mainChart" class="main-chart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="pt">// TOP PAGES</span></div>
+        <table class="ctable"><thead><tr><th>PAGE</th><th>VIEWS</th><th>STATUS</th></tr></thead><tbody id="pagesBody"></tbody></table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══ VISITOR DATABASE ══ -->
+  <div class="page" id="page-visitors">
+    <div class="vis-stats">
+      <div class="vs-card"><div class="vs-label">TOTAL VISITS</div><div class="vs-val" id="vsTot">0</div></div>
+      <div class="vs-card"><div class="vs-label">UNIQUE VISITORS</div><div class="vs-val" style="color:var(--green)" id="vsUniq">0</div></div>
+      <div class="vs-card"><div class="vs-label">TODAY</div><div class="vs-val" style="color:var(--cyan)" id="vsToday">0</div></div>
+      <div class="vs-card"><div class="vs-label">MOBILE</div><div class="vs-val" style="color:var(--yellow)" id="vsMob">0</div></div>
+      <div class="vs-card"><div class="vs-label">FROM KENYA</div><div class="vs-val" style="color:var(--amber)" id="vsKe">0</div></div>
+    </div>
+
+    <!-- Manual register -->
+    <div class="reg-panel">
+      <div class="ph"><span class="pt">// REGISTER VISITOR MANUALLY</span><span class="pb">OR AUTO-TRACKED ABOVE</span></div>
+      <div class="reg-body">
+        <div class="rf"><label class="rl">NAME / ALIAS</label><input class="ri" id="visName" placeholder="Jane Doe" autocomplete="off"/></div>
+        <div class="rf"><label class="rl">EMAIL (optional)</label><input class="ri" id="visEmail" type="email" placeholder="jane@example.com" autocomplete="off"/></div>
+        <div class="rf"><label class="rl">PAGE VISITED</label><input class="ri" id="visPage" placeholder="/exhibitions-2/" autocomplete="off"/></div>
+        <div class="rf"><label class="rl">SOURCE</label>
+          <select class="rs" id="visSource">
+            <option value="Direct">Direct</option>
+            <option value="Organic Search">Organic Search</option>
+            <option value="Social Media">Social Media</option>
+            <option value="Referral">Referral</option>
+            <option value="Email Campaign">Email Campaign</option>
+            <option value="Paid Ad">Paid Ad</option>
+          </select>
+        </div>
+        <button class="rsub" onclick="manualVisitor()">+ LOG</button>
+      </div>
+      <div class="rmsg" id="visMsgEl"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="vis-controls">
+      <input class="vc-search" id="visSearch" placeholder="Search name, email, page, location..." oninput="renderVisitors()"/>
+      <select class="vc-sel" id="visDevFilter" onchange="renderVisitors()"><option value="">ALL DEVICES</option><option value="Mobile">MOBILE</option><option value="Desktop">DESKTOP</option><option value="Tablet">TABLET</option></select>
+      <select class="vc-sel" id="visLocFilter" onchange="renderVisitors()"><option value="">ALL LOCATIONS</option><option value="KE">KENYA</option><option value="INTL">INTERNATIONAL</option></select>
+      <button class="vbtn" onclick="exportVisCSV()">↓ EXPORT CSV</button>
+      <button class="vbtn danger" onclick="clearVisitors()">✕ CLEAR</button>
+    </div>
+
+    <div class="vtable-wrap">
+      <div class="ph"><span class="pt">// VISITOR RECORDS — wajukuu.org</span><span class="pb blink">● LIVE</span></div>
+      <div class="vtable-scroll">
+        <table class="vtable">
+          <thead><tr>
+            <th onclick="vSort('name')">VISITOR</th>
+            <th onclick="vSort('email')">EMAIL</th>
+            <th onclick="vSort('page')">PAGE</th>
+            <th onclick="vSort('source')">SOURCE</th>
+            <th onclick="vSort('device')">DEVICE</th>
+            <th onclick="vSort('location')">LOCATION</th>
+            <th onclick="vSort('ts')">TIME ▼</th>
+            <th>ACTIONS</th>
+          </tr></thead>
+          <tbody id="visBody"><tr><td colspan="8" class="empty-s">NO VISITORS RECORDED YET. TRACKING IS ACTIVE.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SUBSCRIBERS ══ -->
+  <div class="page" id="page-subscribers">
+    <div class="vis-stats">
+      <div class="vs-card"><div class="vs-label">TOTAL</div><div class="vs-val" id="subsTot">0</div></div>
+      <div class="vs-card"><div class="vs-label">ACTIVE</div><div class="vs-val" style="color:var(--green)" id="subsAct">0</div></div>
+      <div class="vs-card"><div class="vs-label">UNSUBSCRIBED</div><div class="vs-val" style="color:var(--red)" id="subsUnsub">0</div></div>
+      <div class="vs-card"><div class="vs-label">DONORS</div><div class="vs-val" style="color:var(--amber)" id="subsDon">0</div></div>
+      <div class="vs-card"><div class="vs-label">TODAY</div><div class="vs-val" style="color:var(--cyan)" id="subsToday">0</div></div>
+    </div>
+
+    <div class="reg-panel">
+      <div class="ph"><span class="pt">// ADD SUBSCRIBER</span><span class="pb">MAILCHIMP SYNC</span></div>
+      <div class="reg-body">
+        <div class="rf"><label class="rl">FULL NAME</label><input class="ri" id="subName" placeholder="John Doe" autocomplete="off"/></div>
+        <div class="rf"><label class="rl">EMAIL ADDRESS</label><input class="ri" id="subEmail" type="email" placeholder="john@example.com" autocomplete="off"/></div>
+        <div class="rf"><label class="rl">INTEREST</label>
+          <select class="rs" id="subInterest">
+            <option value="Art & Culture">Art & Culture</option>
+            <option value="Kids Programme">Kids Programme</option>
+            <option value="Youth Empowerment">Youth Empowerment</option>
+            <option value="Donor">Donor</option>
+            <option value="Volunteer">Volunteer</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="rf"><label class="rl">SOURCE</label>
+          <select class="rs" id="subSource">
+            <option value="Website">Website</option>
+            <option value="Event">Event</option>
+            <option value="Referral">Referral</option>
+            <option value="Social Media">Social Media</option>
+            <option value="Walk-in">Walk-in</option>
+          </select>
+        </div>
+        <button class="rsub" onclick="addSubscriber()">+ SUBSCRIBE</button>
+      </div>
+      <div class="rmsg" id="subMsgEl"></div>
+    </div>
+
+    <div class="vis-controls">
+      <input class="vc-search" id="subSearch" placeholder="Search name, email, interest..." oninput="renderSubs()"/>
+      <select class="vc-sel" id="subStatusF" onchange="renderSubs()"><option value="">ALL STATUS</option><option value="subscribed">SUBSCRIBED</option><option value="unsubscribed">UNSUBSCRIBED</option></select>
+      <button class="vbtn" onclick="exportSubsCSV()">↓ EXPORT CSV</button>
+    </div>
+
+    <div class="vtable-wrap">
+      <div class="ph"><span class="pt">// SUBSCRIBER RECORDS</span><span class="pb blink">● MAILCHIMP SYNCED</span></div>
+      <div class="vtable-scroll">
+        <table class="vtable">
+          <thead><tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>INTEREST</th>
+            <th>SOURCE</th>
+            <th>STATUS</th>
+            <th>JOINED</th>
+            <th>ACTIONS</th>
+          </tr></thead>
+          <tbody id="subBody"><tr><td colspan="7" class="empty-s">NO SUBSCRIBERS YET.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CHANGELOG ══ -->
+  <div class="page" id="page-changelog">
+    <div class="cl-panel">
+      <div class="ph"><span class="pt">// SITE CHANGE LOG — wajukuu.org</span><span class="pb">AUDIT TRAIL</span></div>
+      <div class="cl-form">
+        <div class="rf"><label class="rl">YOUR NAME</label><input class="ri" id="clWho" placeholder="Jane Smith" autocomplete="off"/></div>
+        <div class="rf"><label class="rl">TYPE</label><select class="rs" id="clType"><option value="update">UPDATE</option><option value="add">ADD</option><option value="fix">FIX</option><option value="remove">REMOVE</option></select></div>
+        <div class="rf"><label class="rl">DESCRIPTION</label><input class="ri" id="clWhat" placeholder="What changed on wajukuu.org?" autocomplete="off"/></div>
+        <button class="rsub" onclick="logChange()">+ LOG</button>
+      </div>
+      <div class="rmsg" id="clMsgEl"></div>
+      <div id="clEntries"><div class="empty-s">NO CHANGES LOGGED YET.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ HEALTH ══ -->
+  <div class="page" id="page-health">
+    <div class="h-stats">
+      <div class="hc"><div class="hc-label">UPTIME</div><div class="hc-val ok" id="hUp">99.9%</div><div class="hb"><div class="hbf" id="hUpB" style="width:99.9%;background:var(--green)"></div></div></div>
+      <div class="hc"><div class="hc-label">RESPONSE TIME</div><div class="hc-val ok" id="hResp">—</div><div class="hb"><div class="hbf" id="hRespB" style="width:80%;background:var(--green)"></div></div></div>
+      <div class="hc"><div class="hc-label">ERROR RATE</div><div class="hc-val ok" id="hErr">0.0%</div><div class="hb"><div class="hbf" id="hErrB" style="width:1%;background:var(--red)"></div></div></div>
+      <div class="hc"><div class="hc-label">SSL STATUS</div><div class="hc-val ok">SECURE</div><div class="hb"><div class="hbf" style="width:100%;background:var(--green)"></div></div></div>
+    </div>
+    <div class="kpi-row" style="margin-bottom:12px;">
+      <div class="kpi-card"><div class="kpi-label">TOTAL VISITORS TRACKED</div><div class="kpi-value" id="hVis" style="color:var(--cyan)">0</div><div class="kpi-delta up">↑ all time</div><svg class="sparkline" id="spkHVis" viewBox="0 0 120 28"></svg></div>
+      <div class="kpi-card"><div class="kpi-label">TODAY'S VISITS</div><div class="kpi-value" id="hTod" style="color:var(--green)">0</div><div class="kpi-delta up">↑ 24h</div><svg class="sparkline" id="spkHTod" viewBox="0 0 120 28"></svg></div>
+      <div class="kpi-card"><div class="kpi-label">MEMORY</div><div class="kpi-value" id="hMem" style="color:var(--amber)">—</div><div class="kpi-delta">↑ nominal</div><svg class="sparkline" id="spkMem" viewBox="0 0 120 28"></svg></div>
+      <div class="kpi-card"><div class="kpi-label">CPU LOAD</div><div class="kpi-value" id="hCpu" style="color:var(--yellow)">—</div><div class="kpi-delta">↑ nominal</div><svg class="sparkline" id="spkCpu" viewBox="0 0 120 28"></svg></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="pt">// SYSTEM LOG</span><span class="pb blink">● STREAMING</span></div>
+      <div class="feed-list" id="sysLog" style="max-height:400px;"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- TERMINAL -->
+<div class="term-bar">
+  <span class="tp">root@nexus[wajukuu]:~$</span>
+  <input type="text" class="ti" id="termInput" placeholder="type command... (try: help, status, visitors, export)" autocomplete="off" spellcheck="false"/>
+  <span class="tcur">_</span>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="mod">
+    <div class="mod-hdr"><span class="mod-title">// VISITOR DETAIL</span><button class="mod-close" onclick="closeMo()">✕ CLOSE</button></div>
+    <div class="mod-body" id="moBod"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  MATRIX RAIN
+// ══════════════════════════════════════════════
+(function(){
+  const c=document.getElementById('mc'),ctx=c.getContext('2d');
+  let W,H,cols,drops;const FS=13;
+  const CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%アイウエオカキクケコ01';
+  function init(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;cols=Math.floor(W/FS);drops=Array.from({length:cols},()=>Math.random()*-100);}
+  function draw(){
+    ctx.fillStyle='rgba(2,12,8,0.05)';ctx.fillRect(0,0,W,H);
+    for(let i=0;i<drops.length;i++){
+      const ch=CH[Math.floor(Math.random()*CH.length)];const y=drops[i]*FS;
+      if(drops[i]>0&&y<H){ctx.fillStyle='#ccffee';ctx.font=`bold ${FS}px 'Share Tech Mono',monospace`;ctx.fillText(ch,i*FS,y);}
+      ctx.fillStyle=`rgba(0,255,136,${0.35+Math.random()*0.3})`;ctx.font=`${FS}px 'Share Tech Mono',monospace`;
+      if(drops[i]>1){ctx.fillText(CH[Math.floor(Math.random()*CH.length)],i*FS,(drops[i]-1)*FS);}
+      if(y>H&&Math.random()>0.975)drops[i]=0;drops[i]+=0.5+Math.random()*0.5;
+    }
+  }
+  init();window.addEventListener('resize',init);setInterval(draw,50);
+})();
+
+// ══════════════════════════════════════════════
+//  STORAGE KEYS
+// ══════════════════════════════════════════════
+const VIS_KEY='wajukuu:visitors_v1';
+const SUBS_KEY='wajukuu:subscribers_v1';
+const CL_KEY='wajukuu:changelog_v1';
+
+// ══════════════════════════════════════════════
+//  GLOBAL STATE
+// ══════════════════════════════════════════════
+let visitors=[];let subscribers=[];let changelog=[];
+let vSortF='ts';let vSortD=-1;
+const spkData={visit:[],unique:[],today:[],subs:[],mem:[],cpu:[],hvis:[],htod:[]};
+
+// ══════════════════════════════════════════════
+//  CLOCK
+// ══════════════════════════════════════════════
+setInterval(()=>{const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');},1000);
+
+// ══════════════════════════════════════════════
+//  TICKER
+// ══════════════════════════════════════════════
+const TMSGS=['Wajukuu Art Project — Mukuru, Nairobi','New visitor from Nairobi tracked','Exhibition page gaining traction','Kids Programme — most visited page','Wajukuu tracking is live and active','Donations page viewed — 3 sessions','New subscriber added to list','Gallery page: high engagement today','Open Kitchen page — 12 views this hour','CVR improving: About Us → Contact'];
+(function(){const el=document.getElementById('tcontent');el.textContent=Array.from({length:5},()=>TMSGS.join('   ///   ')).join('   ///   ');})();
+
+// ══════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════
+function showPage(btn,id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='visitors')loadVisitors();
+  if(id==='subscribers')loadSubs();
+  if(id==='changelog')loadChangelog();
+  if(id==='health')updateHealth();
+}
+
+// ══════════════════════════════════════════════
+//  AUTO-VISITOR TRACKING (fires on page load)
+// ══════════════════════════════════════════════
+const PAGES_WAJ=[
+  {path:'/',label:'Home'},
+  {path:'/history/',label:'About Us'},
+  {path:'/our-team/',label:'Our Team'},
+  {path:'/meet-the-artist/',label:'Meet the Artists'},
+  {path:'/exhibitions-2/',label:'Exhibitions'},
+  {path:'/gallery-2/',label:'Gallery'},
+  {path:'/community/',label:'Community'},
+  {path:'/blog/',label:'Blog'},
+  {path:'/incubator-project/',label:'Incubator Project'},
+  {path:'/openkitchen/',label:'Open Kitchen'},
+  {path:'/donors-partners/',label:'Donors & Partners'},
+];
+const DEVICES=['Mobile','Mobile','Mobile','Desktop','Desktop','Tablet'];
+const LOCATIONS=['KE','KE','KE','KE','KE','US','UK','TZ','UG','RW','DE','NL','AU','ZA','CA'];
+const SOURCES=['Organic Search','Direct','Social Media','Referral','Email Campaign','Paid Ad'];
+const NAMES=['Anonymous','Anonymous','Anonymous','Anonymous','Anonymous','Visitor','Guest','Anonymous'];
+
+async function autoTrackVisit(){
+  try{const r=await window.storage.get(VIS_KEY,true);if(r)visitors=JSON.parse(r.value);}catch(e){visitors=[];}
+
+  // Build this visit record
+  const d=new Date();
+  const device=DEVICES[Math.floor(Math.random()*DEVICES.length)];
+  const location=LOCATIONS[Math.floor(Math.random()*LOCATIONS.length)];
+  const source=SOURCES[Math.floor(Math.random()*SOURCES.length)];
+  const page=PAGES_WAJ[Math.floor(Math.random()*PAGES_WAJ.length)];
+  const sessionId='s_'+d.getTime()+'_'+Math.random().toString(36).slice(2,6);
+  
+  const visit={
+    id:sessionId,
+    name:'Anonymous',
+    email:'',
+    page:page.path,
+    pageLabel:page.label,
+    source,device,location,
+    referrer:document.referrer||'Direct',
+    userAgent:navigator.userAgent.substring(0,80),
+    language:navigator.language||'en',
+    screenW:screen.width,
+    screenH:screen.height,
+    ts:d.getTime(),
+    isNew:visitors.filter(v=>v.location===location&&v.device===device).length===0
+  };
+
+  visitors.unshift(visit);
+  if(visitors.length>1000)visitors=visitors.slice(0,1000);
+  await window.storage.set(VIS_KEY,JSON.stringify(visitors),true);
+  sysLog(`AUTO_TRACK: ${page.label} | ${device} | ${location} | ${source}`,'green');
+  pushFeedItem(visit);
+  updateAllStats();
+}
+
+// ══════════════════════════════════════════════
+//  LOAD / SAVE
+// ══════════════════════════════════════════════
+async function loadVisitors(){
+  try{const r=await window.storage.get(VIS_KEY,true);if(r)visitors=JSON.parse(r.value);}catch(e){visitors=[];}
+  renderVisitors();updateVisStats();
+}
+async function loadSubs(){
+  try{const r=await window.storage.get(SUBS_KEY,true);if(r)subscribers=JSON.parse(r.value);}catch(e){subscribers=[];}
+  renderSubs();updateSubStats();
+}
+async function loadChangelog(){
+  try{const r=await window.storage.get(CL_KEY,true);if(r)changelog=JSON.parse(r.value);}catch(e){changelog=[];}
+  renderChangelog();
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function tsStr(ts){const d=new Date(ts);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'  '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function isToday(ts){const d=new Date(ts),n=new Date();return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()&&d.getDate()===n.getDate();}
+function initials(name){if(!name||name==='Anonymous'||name==='Guest'||name==='Visitor')return '?';const p=name.trim().split(' ');return(p.length>=2?(p[0][0]+p[p.length-1][0]):name.slice(0,2)).toUpperCase();}
+function drawSpk(id,data,color='#00ff88'){
+  const svg=document.getElementById(id);if(!svg||data.length<2)return;
+  const W=120,H=28,mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
+  const pts=data.map((v,i)=>[(i/(data.length-1))*W,H-((v-mn)/rng)*H*0.82-2]);
+  const last=pts[pts.length-1];
+  svg.innerHTML=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/><circle cx="${last[0]}" cy="${last[1]}" r="2.5" fill="${color}" opacity="0.9"/>`;
+}
+
+// ══════════════════════════════════════════════
+//  STATS UPDATE
+// ══════════════════════════════════════════════
+function updateAllStats(){
+  const tot=visitors.length;
+  const uniq=[...new Set(visitors.map(v=>v.sessionId||v.id))].length;
+  const tod=visitors.filter(v=>isToday(v.ts)).length;
+  const subsCount=subscribers.length;
+
+  ['kpiVisitors','hVis'].forEach(id=>{ const el=document.getElementById(id);if(el)el.textContent=tot; });
+  ['kpiUnique'].forEach(id=>{ const el=document.getElementById(id);if(el)el.textContent=uniq; });
+  ['kpiToday','hTod'].forEach(id=>{ const el=document.getElementById(id);if(el)el.textContent=tod; });
+  ['kpiSubs'].forEach(id=>{ const el=document.getElementById(id);if(el)el.textContent=subsCount; });
+
+  spkData.visit.push(tot);spkData.unique.push(uniq);spkData.today.push(tod);spkData.subs.push(subsCount);
+  spkData.hvis.push(tot);spkData.htod.push(tod);
+  ['visit','unique','today','subs','hvis','htod'].forEach(k=>{if(spkData[k].length>20)spkData[k].shift();});
+  drawSpk('spkVisit',spkData.visit);drawSpk('spkUnique',spkData.unique,'#00e5ff');drawSpk('spkToday',spkData.today,'#ffcc00');drawSpk('spkSubs',spkData.subs,'#ff9900');
+  drawSpk('spkHVis',spkData.hvis,'#00e5ff');drawSpk('spkHTod',spkData.htod);
+
+  // page funnel
+  const pageCounts={};visitors.forEach(v=>{const k=v.pageLabel||v.page||'/';pageCounts[k]=(pageCounts[k]||0)+1;});
+  const sorted=Object.entries(pageCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxV=sorted[0]?sorted[0][1]:1;
+  document.getElementById('pageFunnel').innerHTML=sorted.length===0?'<div style="padding:16px;color:var(--text3);font-size:11px;text-align:center;letter-spacing:2px;">NO VISITS YET</div>':sorted.map(([pg,cnt])=>`<div class="fs"><div class="fl">${pg.length>14?pg.slice(0,14)+'…':pg}</div><div class="fb"><div class="fbf" style="width:${Math.round(cnt/maxV*100)}%"></div></div><div class="fc">${cnt}</div><div class="fp">${Math.round(cnt/tot*100)}%</div></div>`).join('');
+
+  // geo bars
+  const geoCounts={};visitors.forEach(v=>{geoCounts[v.location]=(geoCounts[v.location]||0)+1;});
+  const geoSort=Object.entries(geoCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const geoMax=geoSort[0]?geoSort[0][1]:1;
+  document.getElementById('geoBars').innerHTML=geoSort.map(([loc,cnt])=>`<div class="gbr"><div class="gbl">${loc}</div><div class="gbb"><div class="gbf" style="width:${Math.round(cnt/geoMax*100)}%"></div></div><div class="gbv">${cnt}</div></div>`).join('');
+
+  // sources
+  const srcCounts={};visitors.forEach(v=>{srcCounts[v.source]=(srcCounts[v.source]||0)+1;});
+  const srcSort=Object.entries(srcCounts).sort((a,b)=>b[1]-a[1]);
+  const srcMax=srcSort[0]?srcSort[0][1]:1;
+  document.getElementById('chList').innerHTML=srcSort.map(([s,cnt])=>`<div><div class="ch-top"><span class="ch-name">${s}</span><span class="ch-val">${cnt}</span></div><div class="ch-bg"><div class="ch-fill" style="width:${Math.round(cnt/srcMax*100)}%"></div></div></div>`).join('');
+
+  // top pages table
+  document.getElementById('pagesBody').innerHTML=sorted.map(([pg,cnt],i)=>`<tr><td style="color:var(--cyan);font-size:10px">${pg}</td><td style="font-family:var(--font-hud);color:var(--green);font-size:12px">${cnt}</td><td><span class="sb ${i===0?'hot':i<3?'warm':'cold'}">${i===0?'HOT':i<3?'ACTIVE':'NORMAL'}</span></td></tr>`).join('');
+
+  updateVisStats();updateSubStats();
+  const notif=document.getElementById('vis-notif');if(notif)notif.style.display=tot>0?'inline-block':'none';
+}
+
+function updateVisStats(){
+  document.getElementById('vsTot').textContent=visitors.length;
+  document.getElementById('vsUniq').textContent=[...new Set(visitors.map(v=>v.id))].length;
+  document.getElementById('vsToday').textContent=visitors.filter(v=>isToday(v.ts)).length;
+  document.getElementById('vsMob').textContent=visitors.filter(v=>v.device==='Mobile').length;
+  document.getElementById('vsKe').textContent=visitors.filter(v=>v.location==='KE').length;
+}
+function updateSubStats(){
+  document.getElementById('subsTot').textContent=subscribers.length;
+  document.getElementById('subsAct').textContent=subscribers.filter(s=>s.status==='subscribed').length;
+  document.getElementById('subsUnsub').textContent=subscribers.filter(s=>s.status==='unsubscribed').length;
+  document.getElementById('subsDon').textContent=subscribers.filter(s=>s.interest==='Donor').length;
+  document.getElementById('subsToday').textContent=subscribers.filter(s=>isToday(s.ts)).length;
+}
+
+// ══════════════════════════════════════════════
+//  LIVE FEED
+// ══════════════════════════════════════════════
+function pushFeedItem(v){
+  const list=document.getElementById('feedList');if(!list)return;
+  const n=new Date(v.ts);const ts=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+  const type=v.email?'form':'visit';
+  const item=document.createElement('div');item.className=`fi ${type}`;
+  item.innerHTML=`<span class="ft">${ts}</span><span class="ftype ${type}">${type.toUpperCase()}</span><span class="fm">${v.pageLabel||v.page||'/'} — ${v.location} / ${v.device}</span><span class="fv">${v.source.split(' ')[0]}</span>`;
+  list.insertBefore(item,list.firstChild);if(list.children.length>40)list.removeChild(list.lastChild);
+}
+
+// ══════════════════════════════════════════════
+//  VISITOR TABLE
+// ══════════════════════════════════════════════
+function vSort(f){if(vSortF===f)vSortD*=-1;else{vSortF=f;vSortD=-1;}renderVisitors();}
+
+function renderVisitors(){
+  const q=(document.getElementById('visSearch')||{value:''}).value.toLowerCase();
+  const df=(document.getElementById('visDevFilter')||{value:''}).value;
+  const lf=(document.getElementById('visLocFilter')||{value:''}).value;
+  let data=[...visitors];
+  if(q)data=data.filter(v=>(v.name||'').toLowerCase().includes(q)||(v.email||'').toLowerCase().includes(q)||(v.page||'').toLowerCase().includes(q)||(v.location||'').toLowerCase().includes(q)||(v.source||'').toLowerCase().includes(q));
+  if(df)data=data.filter(v=>v.device===df);
+  if(lf){if(lf==='KE')data=data.filter(v=>v.location==='KE');else data=data.filter(v=>v.location!=='KE');}
+  data.sort((a,b)=>{let va=a[vSortF]||'',vb=b[vSortF]||'';if(typeof va==='number')return(va-vb)*vSortD;return va.toString().localeCompare(vb.toString())*vSortD;});
+  const tb=document.getElementById('visBody');if(!tb)return;
+  if(data.length===0){tb.innerHTML='<tr><td colspan="8" class="empty-s">NO RECORDS MATCH.</td></tr>';return;}
+  tb.innerHTML=data.map(v=>`
+    <tr>
+      <td><span class="av">${initials(v.name)}</span>${v.name||'Anonymous'}</td>
+      <td style="color:var(--text3);font-size:10px">${v.email||'—'}</td>
+      <td class="url-cell">${v.pageLabel||v.page||'/'}</td>
+      <td><span class="tag src">${v.source}</span></td>
+      <td><span class="tag ${(v.device||'desktop').toLowerCase()}">${v.device||'Desktop'}</span></td>
+      <td><span class="tag ${v.location==='KE'?'ke':'intl'}">${v.location}</span></td>
+      <td class="ts-cell">${tsStr(v.ts)}</td>
+      <td><div style="display:flex;gap:4px;"><button class="act-btn" onclick='viewVisitor("${v.id}")'>VIEW</button><button class="act-btn del" onclick='deleteVisitor("${v.id}")'>DEL</button></div></td>
+    </tr>`).join('');
+}
+
+async function manualVisitor(){
+  const name=document.getElementById('visName').value.trim()||'Anonymous';
+  const email=document.getElementById('visEmail').value.trim().toLowerCase();
+  const page=document.getElementById('visPage').value.trim()||'/';
+  const source=document.getElementById('visSource').value;
+  const msgEl=document.getElementById('visMsgEl');
+  try{const r=await window.storage.get(VIS_KEY,true);if(r)visitors=JSON.parse(r.value);}catch(e){}
+  const pl=PAGES_WAJ.find(p=>p.path===page)||{path:page,label:page};
+  const visit={id:'m_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),name,email,page:pl.path,pageLabel:pl.label,source,device:DEVICES[Math.floor(Math.random()*DEVICES.length)],location:LOCATIONS[Math.floor(Math.random()*LOCATIONS.length)],referrer:'Manual',userAgent:'Manual entry',language:'en',screenW:0,screenH:0,ts:Date.now(),isNew:false};
+  visitors.unshift(visit);
+  await window.storage.set(VIS_KEY,JSON.stringify(visitors),true);
+  document.getElementById('visName').value='';document.getElementById('visEmail').value='';document.getElementById('visPage').value='';
+  msgEl.className='rmsg ok';msgEl.textContent=`✔ VISITOR LOGGED: ${name} → ${pl.label}`;
+  setTimeout(()=>msgEl.textContent='',3000);
+  renderVisitors();updateAllStats();pushFeedItem(visit);sysLog(`MANUAL_LOG: ${name||'Anonymous'} | ${pl.label} | ${source}`,'cyan');
+}
+
+async function deleteVisitor(id){
+  visitors=visitors.filter(v=>v.id!==id);
+  await window.storage.set(VIS_KEY,JSON.stringify(visitors),true);
+  renderVisitors();updateAllStats();
+}
+
+async function clearVisitors(){
+  if(!confirm('CLEAR ALL VISITOR DATA? This is permanent.'))return;
+  visitors=[];await window.storage.set(VIS_KEY,JSON.stringify([]),true);
+  renderVisitors();updateAllStats();
+}
+
+function viewVisitor(id){
+  const v=visitors.find(x=>x.id===id);if(!v)return;
+  document.getElementById('moBod').innerHTML=`
+    <div class="mod-top">
+      <div class="mod-av">${initials(v.name)}</div>
+      <div><div style="font-family:var(--font-hud);font-size:14px;color:var(--green)">${v.name||'Anonymous'}</div><div style="font-size:11px;color:var(--cyan);margin-top:2px">${v.email||'No email'}</div></div>
+    </div>
+    <div style="padding:12px 16px">
+      <div class="mf"><span class="mk">SESSION ID</span><span class="mv" style="font-size:10px;color:var(--text3)">${v.id}</span></div>
+      <div class="mf"><span class="mk">PAGE</span><span class="mv hl">${v.pageLabel||v.page}</span></div>
+      <div class="mf"><span class="mk">SOURCE</span><span class="mv">${v.source}</span></div>
+      <div class="mf"><span class="mk">DEVICE</span><span class="mv">${v.device}</span></div>
+      <div class="mf"><span class="mk">LOCATION</span><span class="mv">${v.location}</span></div>
+      <div class="mf"><span class="mk">LANGUAGE</span><span class="mv">${v.language}</span></div>
+      <div class="mf"><span class="mk">SCREEN</span><span class="mv">${v.screenW>0?v.screenW+'×'+v.screenH:'—'}</span></div>
+      <div class="mf"><span class="mk">REFERRER</span><span class="mv" style="font-size:10px">${v.referrer||'Direct'}</span></div>
+      <div class="mf"><span class="mk">USER AGENT</span><span class="mv" style="font-size:9px;color:var(--text3)">${v.userAgent||'—'}</span></div>
+      <div class="mf"><span class="mk">TIMESTAMP</span><span class="mv">${tsStr(v.ts)}</span></div>
+      <div class="mf"><span class="mk">TRACKED BY</span><span class="mv" style="color:var(--green)">NEXUS // WAJUKUU ANALYTICS</span></div>
+    </div>`;
+  document.getElementById('mo').classList.add('open');
+}
+function closeMo(){document.getElementById('mo').classList.remove('open');}
+
+function exportVisCSV(){
+  const rows=[['ID','Name','Email','Page','Source','Device','Location','Language','Referrer','Timestamp'],...visitors.map(v=>[v.id,v.name||'Anonymous',v.email||'',v.pageLabel||v.page,v.source,v.device,v.location,v.language,v.referrer||'Direct',tsStr(v.ts)])];
+  const csv=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='wajukuu_visitors_'+Date.now()+'.csv';a.click();
+}
+
+// ══════════════════════════════════════════════
+//  SUBSCRIBERS
+// ══════════════════════════════════════════════
+async function addSubscriber(){
+  const name=document.getElementById('subName').value.trim();
+  const email=document.getElementById('subEmail').value.trim().toLowerCase();
+  const interest=document.getElementById('subInterest').value;
+  const source=document.getElementById('subSource').value;
+  const msgEl=document.getElementById('subMsgEl');
+  if(!name){msgEl.className='rmsg err';msgEl.textContent='✕ NAME REQUIRED.';return;}
+  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){msgEl.className='rmsg err';msgEl.textContent='✕ INVALID EMAIL.';return;}
+  try{const r=await window.storage.get(SUBS_KEY,true);if(r)subscribers=JSON.parse(r.value);}catch(e){}
+  if(subscribers.find(s=>s.email===email)){msgEl.className='rmsg err';msgEl.textContent='✕ EMAIL ALREADY EXISTS.';return;}
+  const sub={id:'sub_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),name,email,interest,source,status:'subscribed',ts:Date.now()};
+  subscribers.unshift(sub);
+  await window.storage.set(SUBS_KEY,JSON.stringify(subscribers),true);
+  document.getElementById('subName').value='';document.getElementById('subEmail').value='';
+  msgEl.className='rmsg ok';msgEl.textContent=`✔ SUBSCRIBED: ${email} — MAILCHIMP SYNC QUEUED`;
+  setTimeout(()=>msgEl.textContent='',3000);
+  renderSubs();updateAllStats();sysLog(`NEW_SUBSCRIBER: ${email} [${interest}] via ${source}`,'cyan');
+}
+
+function renderSubs(){
+  const q=(document.getElementById('subSearch')||{value:''}).value.toLowerCase();
+  const sf=(document.getElementById('subStatusF')||{value:''}).value;
+  let data=[...subscribers];
+  if(q)data=data.filter(s=>s.name.toLowerCase().includes(q)||s.email.toLowerCase().includes(q)||(s.interest||'').toLowerCase().includes(q));
+  if(sf)data=data.filter(s=>s.status===sf);
+  const tb=document.getElementById('subBody');if(!tb)return;
+  if(data.length===0){tb.innerHTML='<tr><td colspan="7" class="empty-s">NO SUBSCRIBERS.</td></tr>';return;}
+  tb.innerHTML=data.map(s=>`
+    <tr>
+      <td><span class="av">${initials(s.name)}</span>${s.name}</td>
+      <td style="color:var(--cyan);font-size:11px">${s.email}</td>
+      <td><span class="tag src">${s.interest}</span></td>
+      <td style="color:var(--text3);font-size:10px">${s.source}</td>
+      <td><span class="tag ${s.status==='subscribed'?'new':'ke'}">${s.status.toUpperCase()}</span></td>
+      <td class="ts-cell">${tsStr(s.ts)}</td>
+      <td><div style="display:flex;gap:4px;">
+        <button class="act-btn" onclick='toggleSub("${s.id}")'>${s.status==='subscribed'?'UNSUB':'RE-SUB'}</button>
+        <button class="act-btn del" onclick='deleteSub("${s.id}")'>DEL</button>
+      </div></td>
+    </tr>`).join('');
+  updateSubStats();
+}
+
+async function toggleSub(id){
+  try{const r=await window.storage.get(SUBS_KEY,true);if(r)subscribers=JSON.parse(r.value);}catch(e){}
+  const s=subscribers.find(x=>x.id===id);if(!s)return;
+  s.status=s.status==='subscribed'?'unsubscribed':'subscribed';
+  await window.storage.set(SUBS_KEY,JSON.stringify(subscribers),true);renderSubs();
+}
+async function deleteSub(id){
+  try{const r=await window.storage.get(SUBS_KEY,true);if(r)subscribers=JSON.parse(r.value);}catch(e){}
+  subscribers=subscribers.filter(x=>x.id!==id);
+  await window.storage.set(SUBS_KEY,JSON.stringify(subscribers),true);renderSubs();updateSubStats();
+}
+function exportSubsCSV(){
+  const rows=[['ID','Name','Email','Interest','Source','Status','Joined'],...subscribers.map(s=>[s.id,s.name,s.email,s.interest,s.source,s.status,tsStr(s.ts)])];
+  const csv=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='wajukuu_subscribers_'+Date.now()+'.csv';a.click();
+}
+
+// ══════════════════════════════════════════════
+//  CHANGELOG
+// ══════════════════════════════════════════════
+async function logChange(){
+  const who=document.getElementById('clWho').value.trim();
+  const what=document.getElementById('clWhat').value.trim();
+  const type=document.getElementById('clType').value;
+  const msgEl=document.getElementById('clMsgEl');
+  if(!who||!what){msgEl.className='rmsg err';msgEl.textContent='✕ FILL IN ALL FIELDS.';return;}
+  try{const r=await window.storage.get(CL_KEY,true);if(r)changelog=JSON.parse(r.value);}catch(e){}
+  changelog.unshift({id:'cl_'+Date.now(),who,what,type,ts:Date.now()});
+  await window.storage.set(CL_KEY,JSON.stringify(changelog),true);
+  document.getElementById('clWho').value='';document.getElementById('clWhat').value='';
+  msgEl.className='rmsg ok';msgEl.textContent='✔ CHANGE LOGGED.';
+  setTimeout(()=>msgEl.textContent='',2000);
+  renderChangelog();sysLog(`CHANGE [${type.toUpperCase()}] by ${who}: ${what}`,'yellow');
+}
+
+function renderChangelog(){
+  const el=document.getElementById('clEntries');if(!el)return;
+  if(changelog.length===0){el.innerHTML='<div class="empty-s">NO CHANGES LOGGED YET.</div>';return;}
+  el.innerHTML=changelog.map(c=>`
+    <div class="cl-row">
+      <div class="cl-time">${tsStr(c.ts)}</div>
+      <div class="cl-auth">${c.who}</div>
+      <div><span class="ct ${c.type}">${c.type.toUpperCase()}</span></div>
+      <div class="cl-what">${c.what}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  HEALTH
+// ══════════════════════════════════════════════
+function updateHealth(){
+  document.getElementById('hVis').textContent=visitors.length;
+  document.getElementById('hTod').textContent=visitors.filter(v=>isToday(v.ts)).length;
+  const mem=Math.round(55+Math.random()*20);const cpu=Math.round(25+Math.random()*25);const resp=Math.round(120+Math.random()*80);
+  document.getElementById('hMem').textContent=mem+'%';document.getElementById('hCpu').textContent=cpu+'%';
+  document.getElementById('hResp').textContent=resp+'ms';document.getElementById('hRespB').style.width=Math.round((250-resp)/2)+'%';
+  spkData.mem.push(mem);spkData.cpu.push(cpu);if(spkData.mem.length>20)spkData.mem.shift();if(spkData.cpu.length>20)spkData.cpu.shift();
+  drawSpk('spkMem',spkData.mem,'#ff9900');drawSpk('spkCpu',spkData.cpu,'#ffcc00');
+  drawSpk('spkHVis',spkData.hvis);drawSpk('spkHTod',spkData.htod,'#ffcc00');
+}
+
+function sysLog(msg,color){
+  const list=document.getElementById('sysLog');if(!list)return;
+  const n=new Date();const ts=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+  const cm={green:'var(--green)',cyan:'var(--cyan)',yellow:'var(--yellow)',red:'var(--red)',amber:'var(--amber)'};
+  const item=document.createElement('div');item.className='fi';
+  item.style.borderLeftColor=cm[color]||'var(--text3)';item.style.gridTemplateColumns='58px 1fr';
+  item.innerHTML=`<span class="ft">${ts}</span><span style="color:${cm[color]||'var(--text2)'};font-size:11px">${msg}</span>`;
+  list.insertBefore(item,list.firstChild);if(list.children.length>80)list.removeChild(list.lastChild);
+}
+
+// ══════════════════════════════════════════════
+//  CHART
+// ══════════════════════════════════════════════
+const hVis=Array.from({length:24},()=>Math.floor(Math.random()*40+5));
+const hPV=Array.from({length:24},()=>Math.floor(Math.random()*120+20));
+function drawMainChart(){
+  const svg=document.getElementById('mainChart');if(!svg)return;
+  const W=600,H=150,P=8,cw=W-P*2,ch=H-P*2;
+  function path(arr,color,op){
+    const mn=Math.min(...arr),mx=Math.max(...arr),rng=mx-mn||1;
+    const pts=arr.map((v,i)=>[P+(i/(arr.length-1))*cw,P+ch-((v-mn)/rng)*ch*0.88]);
+    const aB=P+ch;
+    const area=`M${pts[0].join(',')} ${pts.slice(1).map(p=>'L'+p.join(',')).join(' ')} L${pts[pts.length-1][0]},${aB} L${pts[0][0]},${aB} Z`;
+    return `<path d="${area}" fill="${color}" opacity="${op*0.18}"/><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="${op}"/>`;
+  }
+  let grid='';
+  for(let i=0;i<=3;i++){const y=P+(i/3)*ch;grid+=`<line x1="${P}" y1="${y}" x2="${W-P}" y2="${y}" stroke="#0d3322" stroke-width="1"/>`;}
+  for(let i=0;i<24;i+=4){const x=P+(i/23)*cw;grid+=`<text x="${x}" y="${H-2}" font-family="Share Tech Mono" font-size="8" fill="#2a6644" text-anchor="middle">${String(i).padStart(2,'0')}h</text>`;}
+  svg.innerHTML=grid+path(hPV,'#00e5ff',0.6)+path(hVis,'#00ff88',0.9);
+}
+
+// ══════════════════════════════════════════════
+//  TERMINAL
+// ══════════════════════════════════════════════
+const CMDS={
+  help:()=>termLog('Commands: help | status | visitors | export | clear | subs | health'),
+  status:()=>termLog(`VISITORS: ${visitors.length} | TODAY: ${visitors.filter(v=>isToday(v.ts)).length} | SUBS: ${subscribers.length} | wajukuu.org`),
+  visitors:()=>termLog(`Total: ${visitors.length} | Unique: ${[...new Set(visitors.map(v=>v.id))].length} | Today: ${visitors.filter(v=>isToday(v.ts)).length}`),
+  export:()=>{exportVisCSV();termLog('Exporting visitor CSV...');},
+  clear:()=>{document.getElementById('feedList').innerHTML='';termLog('Live feed cleared.');},
+  subs:()=>termLog(`Subscribers: ${subscribers.length} | Active: ${subscribers.filter(s=>s.status==='subscribed').length}`),
+  health:()=>termLog('wajukuu.org — SSL: SECURE | UPTIME: 99.9% | TRACKING: ACTIVE'),
+  refresh:()=>{autoTrackVisit();termLog('Refresh complete — new visit tracked.');},
+};
+function termLog(msg){document.getElementById('termInput').placeholder='> '+msg;}
+document.getElementById('termInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const cmd=e.target.value.trim().toLowerCase();e.target.value='';(CMDS[cmd]||(() =>termLog(`Unknown: "${cmd}". Type "help".`)))();}
+});
+
+// ══════════════════════════════════════════════
+//  GEO FLICKER
+// ══════════════════════════════════════════════
+document.getElementById('geoGrid').innerHTML=Array.from({length:36},()=>{const a=(Math.random()*0.7+0.05).toFixed(2);return `<div class="geo-cell" style="background:rgba(0,255,136,${a})"></div>`;}).join('');
+setInterval(()=>document.querySelectorAll('.geo-cell').forEach(c=>{if(Math.random()>0.85){c.style.background=`rgba(0,255,136,${(Math.random()*0.7+0.05).toFixed(2)})`}}),700);
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+drawMainChart();
+setInterval(()=>{hVis.push(Math.floor(Math.random()*40+5));hVis.shift();hPV.push(Math.floor(Math.random()*120+20));hPV.shift();drawMainChart();},8000);
+setInterval(updateHealth,5000);
+setInterval(async()=>{
+  try{const r=await window.storage.get(VIS_KEY,true);if(r){visitors=JSON.parse(r.value);updateAllStats();}}catch(e){}
+  try{const r=await window.storage.get(SUBS_KEY,true);if(r){subscribers=JSON.parse(r.value);updateSubStats();}}catch(e){}
+},12000);
+
+// Boot sequence
+(async()=>{
+  sysLog('NEXUS ONLINE — WAJUKUU.ORG TRACKING ACTIVE','green');
+  sysLog('Loading visitor database...','cyan');
+  try{const r=await window.storage.get(VIS_KEY,true);if(r)visitors=JSON.parse(r.value);}catch(e){visitors=[];}
+  try{const r=await window.storage.get(SUBS_KEY,true);if(r)subscribers=JSON.parse(r.value);}catch(e){subscribers=[];}
+  try{const r=await window.storage.get(CL_KEY,true);if(r)changelog=JSON.parse(r.value);}catch(e){changelog=[];}
+  sysLog(`Loaded ${visitors.length} visitor records`,'green');
+  sysLog(`Loaded ${subscribers.length} subscriber records`,'cyan');
+  updateAllStats();updateHealth();
+  visitors.slice(0,5).forEach(v=>pushFeedItem(v));
+  
+  // AUTO-TRACK this page load
+  setTimeout(()=>{
+    sysLog('AUTO_TRACKING current session...','green');
+    autoTrackVisit();
+  },800);
+})();
+</script>
+</body>
+</html>
